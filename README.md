@@ -1,3 +1,5 @@
+
+
 # 🧠 Text-to-SQL Converter (React + Node.js + SQLite)
 
 A complete full-stack application that converts **natural language questions** into **SQL queries**, executes them, and provides a powerful GUI to manage databases, tables, and data.
@@ -383,6 +385,9 @@ Creator of:
 ✨ Complete Text-to-SQL system
 ✨ React UI + Node backend
 ✨ Smart SQL generation engine
+
+
+
 
 
 # ❤️ Author
