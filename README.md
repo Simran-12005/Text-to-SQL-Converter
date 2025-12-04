@@ -1,62 +1,53 @@
+# 🧠 Text-to-SQL Converter (React + Node.js + SQLite)
 
-# 🚀 Text-to-SQL Backend (Express.js + SQLite)
+A complete full-stack application that converts **natural language questions** into **SQL queries**, executes them, and provides a powerful GUI to manage databases, tables, and data.
 
-This is the **backend server** for the Text-to-SQL Converter application.
-It provides APIs for:
+This project includes:
 
-*  Natural language → SQL conversion
-*  Database creation (SQLite)
-*  Table creation
-*  Insert / Update / Delete data
-*  Fetching data and schema
-*  Running raw SQL
-* Dedicated metadata database for tracking structure
-
-It works seamlessly with the **React frontend**.
-
----
-
-## 🛠 Tech Stack
-
-| Component             | Technology                           |
-| --------------------- | ------------------------------------ |
-| Backend Framework     | **Express.js**                       |
-| Database Engine       | **SQLite3**                          |
-| Metadata Store        | **metadata.db**                      |
-| File-based DB Storage | `/databases/` folder                 |
-| Text → SQL Engine     | Custom keywords + pattern extraction |
-| Language              | Node.js                              |
+* 🔍 Natural Language → SQL conversion
+* 🗄 SQLite database creation
+* 📋 Table designer
+* 🧪 Data insertion & deletion
+* 🧑‍💻 SQL editor
+* 🧠 Smart SQL generation engine (custom NLP rules)
+* 🎨 React frontend
+* 🚀 Node.js backend
 
 ---
 
-## 📦 Folder Structure (Backend)
+# 📂 Project Structure
 
 ```
-backend/
+Text-to-SQL-Converter/
 │
-├── server.js         # Main backend file (your code)
-├── databases/        # Auto-created databases (each *.db)
-├── metadata.db       # Stores DB, table, column metadata
-└── README.md         # (this file)
+├── backend/
+│   ├── server.js          # FULL backend logic (your code)
+│   ├── metadata.db        # Metadata storage
+│   ├── databases/         # Auto-created databases (*.db)
+│   └── package.json
+│
+└── frontend/
+    ├── src/
+    │   ├── App.js        # FULL UI logic (your code)
+    │   ├── App.css
+    │   └── index.js
+    ├── package.json
+    └── public/
 ```
 
 ---
 
-## ▶️ Run the Backend Server
+# 🚀 Running the Project
 
-### Install dependencies
-
-```sh
-npm install express cors sqlite3
-```
-
-### Start the server
+## 1️⃣ Start Backend (Node.js)
 
 ```sh
+cd backend
+npm install
 node server.js
 ```
 
-The backend runs on:
+Backend will run on:
 
 ```
 http://localhost:8000
@@ -64,324 +55,335 @@ http://localhost:8000
 
 ---
 
-# 🗄 Database Architecture
+## 2️⃣ Start Frontend (React)
 
-### 1️⃣ **Physical Databases**
-
-Stored inside:
-
-```
-/databases/*.db
+```sh
+cd frontend
+npm install
+npm start
 ```
 
-Each DB is created from:
+Frontend will run on:
+
+```
+http://localhost:3000
+```
+
+Make sure backend is running first.
+
+---
+
+# 🛠 Backend (Node.js + SQLite + Text-to-SQL Engine)
+
+Your backend (`server.js`) includes:
+
+### ✔ Automatic SQLite DB creation
+
+Stored under:
+
+```
+backend/databases/*.db
+```
+
+### ✔ Metadata Database (`metadata.db`)
+
+Stores:
+
+* databases
+* tables
+* columns
+  Used by frontend to show structure.
+
+### ✔ Dynamic DB connections
+
+Each DB is accessed via:
 
 ```js
-new sqlite3.Database(`${name}.db`)
+getDBConnection(database)
 ```
 
 ---
 
-### 2️⃣ **Metadata Database (`metadata.db`)**
+# 📡 Backend API Endpoints (Matched EXACTLY to your code)
 
-Tracks:
+## 🔹 Health Check
 
-| Table         | Purpose                              |
-| ------------- | ------------------------------------ |
-| **databases** | Stores database names + descriptions |
-| **tables**    | Stores table-level metadata          |
-| **columns**   | Column structures for each table     |
-
-This allows GUI display in React.
+`GET /health`
 
 ---
 
-# 📡 API Documentation
+## 🔹 Databases
 
----
+### Get all databases
 
-## ⭐ 1. Health Check
+`GET /databases`
 
-### `GET /health`
+### Create database
 
-**Response**
-
-```json
-{ "status": "OK", "timestamp": "2025-12-04T18:30:00Z" }
-```
-
----
-
-# 🛢 DATABASE ROUTES
-
-## 2. Get All Databases
-
-### `GET /databases`
-
-Returns metadata + table count.
-
----
-
-## 3. Create Database
-
-### `POST /databases`
-
-**Body**
+`POST /databases`
 
 ```json
 {
   "name": "mydb",
-  "description": "Sample DB"
+  "description": "sample database"
 }
 ```
 
-Creates:
-
-* Physical DB: `/databases/mydb.db`
-* Metadata entry
-
 ---
 
-# 📋 TABLE ROUTES
+## 🔹 Tables
 
-## 4. Get Tables of a Database
+### Get tables of a database
 
-### `GET /tables/:database`
+`GET /tables/:database`
 
-Returns table list + column count.
+### Create table
 
----
-
-## 5. Create Table
-
-### `POST /tables`
-
-**Body**
+`POST /tables`
 
 ```json
 {
   "database": "mydb",
   "table_name": "users",
-  "description": "User table",
+  "description": "",
   "columns": [
-    {
-      "column_name": "id",
-      "data_type": "INTEGER",
-      "is_primary_key": true,
-      "is_nullable": false
-    },
-    {
-      "column_name": "name",
-      "data_type": "TEXT",
-      "is_primary_key": false,
-      "is_nullable": true
-    }
+    { "column_name": "id", "data_type": "INTEGER", "is_primary_key": true, "is_nullable": false },
+    { "column_name": "name", "data_type": "TEXT", "is_primary_key": false, "is_nullable": true }
   ]
 }
 ```
 
-Creates table + metadata.
+---
+
+## 🔹 Data
+
+### Fetch data
+
+`GET /data/:database/:table`
+
+### Insert data
+
+`POST /data/:database/:table`
+
+```json
+{ "data": { "name": "Simran", "age": 22 } }
+```
+
+### Update
+
+`PUT /data/:database/:table/:id`
+
+### Delete
+
+`DELETE /data/:database/:table/:id`
 
 ---
 
-# 📦 DATA ROUTES
+## 🔹 Schema
 
-## 6. Fetch Table Data
+### Get table schema
 
-### `GET /data/:database/:table`
-
-Returns max 100 rows.
+`GET /schema/:database/:table`
 
 ---
 
-## 7. Insert Data
+## 🔹 Natural Language → SQL
 
-### `POST /data/:database/:table`
+### Convert & Execute
 
-**Body**
+`POST /convert`
 
 ```json
 {
-  "data": { "name": "Simran", "age": 22 }
-}
-```
-
----
-
-## 8. Update Data
-
-### `PUT /data/:database/:table/:id`
-
-Updates record based on SQLite `rowid`.
-
----
-
-## 9. Delete Data
-
-### `DELETE /data/:database/:table/:id`
-
-Deletes record.
-
----
-
-# 📐 SCHEMA ROUTES
-
-## 10. Get Table Schema
-
-### `GET /schema/:database/:table`
-
-Uses:
-
-```sql
-PRAGMA table_info(tablename)
-```
-
----
-
-# 🤖 TEXT → SQL ROUTE
-
-## 11. Convert Natural Language to SQL
-
-### `POST /convert`
-
-**Body**
-
-```json
-{
-  "text": "show me all users where age greater than 20",
+  "text": "show all users where age greater than 20",
   "database": "mydb",
   "table": "users"
 }
 ```
 
-### How SQL is generated
-
-The backend:
-
-1. Reads schema via PRAGMA
-2. Extracts:
-
-   * conditions
-   * limits
-   * aggregates
-   * filters
-   * order by
-3. Maps English → SQL via **pattern matchers**
-
-### Example Result
+Response:
 
 ```json
 {
   "sql_query": "SELECT * FROM users WHERE age > 20 LIMIT 100",
-  "results": [ ... ]
+  "results": [...]
 }
 ```
 
 ---
 
-# 📜 RAW SQL EXECUTION
+## 🔹 Raw SQL
 
-## 12. Run SQL manually
+### Run SQL manually
 
-### `POST /query`
-
-**Body**
+`POST /query`
 
 ```json
 {
   "database": "mydb",
-  "sql": "SELECT * FROM users WHERE age > 20"
+  "sql": "SELECT * FROM users"
 }
 ```
 
-Supports:
-
-* SELECT
-* UPDATE
-* DELETE
-* INSERT
-
-SELECT returns result rows.
-Others return:
-
-```json
-{ "changes": 1 }
-```
-
 ---
 
-# 🧠 Text → SQL Engine (Overview)
+# 🧠 Text-to-SQL Engine (Exactly Your Code)
 
-Your backend includes custom logic:
+Your backend intelligently parses English sentences:
 
-### ➤ Condition extraction
+Supports:
 
-Handles:
-
-* greater than
-* less than
+* count
+* filter
+* where conditions
+* greater than / less than
 * equal to
-* LIKE queries
 * contains
-* numeric comparison
+* ordering
+* aggregates (SUM, AVG, MIN, MAX)
+* LIMIT extraction
 
-### ➤ Aggregates
+Functions used:
 
-Supports:
+* `generateSQLFromText()`
+* `extractWhereConditions()`
+* `extractColumns()`
+* `extractOrderBy()`
+* `extractLimit()`
+* `findBestColumnMatch()`
 
-* AVG
-* SUM
-* MAX
-* MIN
-
-### ➤ Column matching
-
-Smart matching:
-
-* exact
-* contains
-* partial
-
-### ➤ Safety
-
-Adds `LIMIT 100` automatically unless using aggregates.
-
-This is a powerful mini-NLP engine.
+This is a powerful custom SQL generator.
 
 ---
 
-# 📤 Server Output at Startup
+# 🎨 Frontend (React)
 
-When running:
+Your frontend UI (`src/App.js`) contains 4 complete modules.
+
+## 1️⃣ Query Converter (Natural Language → SQL)
+
+* User enters natural language
+* Calls `/convert`
+* Shows:
+
+  * generated SQL
+  * results table
+
+---
+
+## 2️⃣ Database Manager
+
+* Shows all databases
+* Create DB modal
+* Shows DB details:
+
+  * description
+  * table count
+  * created date
+
+Uses:
 
 ```
-Server running on http://localhost:8000
-Available endpoints:
-  GET  /health
-  GET  /databases
-  POST /databases
-  GET  /tables/:database
-  POST /tables
-  POST /convert
-  POST /query
-  GET  /data/:database/:table
-  POST /data/:database/:table
-  PUT  /data/:database/:table/:id
-  DELETE /data/:database/:table/:id
-  GET  /schema/:database/:table
+GET  /databases
+POST /databases
+GET  /tables/:database
 ```
 
 ---
 
-# 🧹 Cleanup & Shutdown
+## 3️⃣ Data Manager
 
-Graceful shutdown closes all SQLite connections using:
+* Shows table data
+* Insert modal (generated from schema)
+* Delete rows (via rowid)
+* Dynamic inputs based on PRAGMA schema
+
+Uses:
+
+```
+GET /schema/:database/:table
+GET /data/:database/:table
+POST /data/:database/:table
+DELETE /data/:database/:table/:id
+```
+
+---
+
+## 4️⃣ SQL Editor
+
+* Write custom SQL
+* Execute
+* Show results
+
+Uses:
+
+```
+POST /query
+```
+
+---
+
+# 🎛 UI Features (Based on Your App.js)
+
+* Dropdown for databases + tables
+* Modals for:
+
+  * Create Database
+  * Create Table
+  * Insert Data
+* Auto-refresh on changes
+* Scrollable result tables
+* Loading indicators
+* Clear buttons
+* Responsive layouts
+
+All React state:
 
 ```js
-process.on('SIGINT', ...)
+useState for:
+- databases
+- tables
+- selectedDatabase
+- selectedTable
+- query / sqlQuery
+- results
+- tableData
+- tableSchema
+- modals
 ```
 
 ---
+
+# 📘 Example Natural Query
+
+Input:
+
+```
+Show me products cheaper than 500
+```
+
+Backend generates:
+
+```sql
+SELECT * FROM products WHERE price < 500 LIMIT 100
+```
+
+Frontend displays:
+
+* SQL preview
+* Results in table
+
+---
+
+# 🧑‍💻 Author
+
+**Simran Gupta**
+Full-Stack Developer | AI & Databases
+Creator of:
+✨ Complete Text-to-SQL system
+✨ React UI + Node backend
+✨ Smart SQL generation engine
+
 
 # ❤️ Author
 
