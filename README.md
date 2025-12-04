@@ -377,19 +377,6 @@ Frontend displays:
 
 ---
 
-# 🧑‍💻 Author
-
-**Simran Gupta**
-Full-Stack Developer | AI & Databases
-Creator of:
-✨ Complete Text-to-SQL system
-✨ React UI + Node backend
-✨ Smart SQL generation engine
-
-
-
-
-
 # ❤️ Author
 
 **Simran Gupta**
